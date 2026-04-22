@@ -1,12 +1,10 @@
 # ⚙️ Setup Guide – Inventory & Logistics dbt Project
 
-This guide will help you run the project end-to-end using **dbt + Databricks**.
+This guide helps you run the project using **dbt + Databricks**.
 
 ---
 
 ## 🚀 Prerequisites
-
-Make sure you have:
 
 * Python (<= 3.11)
 * dbt installed
@@ -15,175 +13,61 @@ Make sure you have:
 
 ---
 
-## 🔧 Step 1: Install dbt (Databricks Adapter)
+## 🔧 Step 1: Install dbt
 
 ```bash
 pip install dbt-databricks
-```
-
-Verify installation:
-
-```bash
-dbt --version
 ```
 
 ---
 
 ## 🔐 Step 2: Configure `profiles.yml`
 
-Create or update your dbt profile file:
+Create a dbt profile and connect it to your Databricks workspace.
 
-📍 Location:
-
-* Mac/Linux → `~/.dbt/profiles.yml`
-* Windows → `C:\Users\<your_user>\.dbt\profiles.yml`
+Refer to dbt documentation for full configuration.
 
 ---
 
-### Example Configuration
-
-```yaml
-inventory_project:
-  target: dev
-  outputs:
-    dev:
-      type: databricks
-      catalog: your_catalog
-      schema: your_schema
-      host: https://<databricks-host>
-      http_path: /sql/1.0/warehouses/<warehouse-id>
-      token: <your-access-token>
-```
-
----
-
-## 📂 Step 3: Clone the Repository
+## 📂 Step 3: Clone Repository
 
 ```bash
-git clone <dbt-inventory-logistic-kit-repo-url>
+git clone <repo-url>
 cd dbt-inventory-logistics-kit
 ```
 
 ---
 
-## 📊 Step 4: Load Sample Data (Excel → dbt Seeds)
+## 📊 Step 4: Data Setup
 
-This project includes **sample data in Excel format**, where each sheet represents a source table.
+This project requires source data to run successfully.
 
----
+👉 Sample data is **not included in this repository**.
 
-### 🔹 How it works
+You can:
 
-* Each sheet = one table
-* Sheet name = table name
-* Data will be loaded into your warehouse using dbt seeds
-
----
-
-### 🔹 Step 4.1: Convert Excel to CSV
-
-dbt only supports CSV for seeds.
-
-👉 Convert each sheet into CSV files:
-
-Example:
-
-| Excel Sheet Name | CSV File Name  |
-| ---------------- | -------------- |
-| items            | items.csv      |
-| warehouses       | warehouses.csv |
-| shipments        | shipments.csv  |
+* Use your own data
+* Or use the full version with ready-to-use datasets
 
 ---
 
-### 🔹 Step 4.2: Place files in `seeds/` folder
-
-```id="j8pb5v"
-seeds/
-├── items.csv
-├── warehouses.csv
-├── sites.csv
-├── shipments.csv
-├── shipment_lines.csv
-├── move_orders.csv
-├── move_order_lines.csv
-├── return_orders.csv
-├── return_order_lines.csv
-├── stock.csv
-```
-
----
-
-### 🔹 Step 4.3: Load data using dbt
-
-```bash id="c98r05"
-dbt seed
-```
-
-This will create tables in your target schema.
-
----
-
-### 🔹 Step 4.4: Verify
-
-Run:
-
-```bash id="bb99d4"
-dbt run
-```
-
-👉 Models should now build successfully using the seeded data.
-
----
-
-### 🔹 Optional (Recommended)
-
-If you're using Excel frequently, you can:
-
-* Export all sheets as CSV in one go
-* Keep them version-controlled in `seeds/`
-
----
-
-## 🎯 Outcome
-
-You now have:
-
-* Fully populated source tables
-* Ready-to-run dbt models
-* End-to-end working pipeline
-
----
-
-## ⚙️ Step 5: Run dbt Models
+## ⚙️ Step 5: Run Models
 
 ```bash
 dbt run
 ```
 
-This will:
-
-* Build intermediate models
-* Create fact & dimension tables
-* Generate KPI models
-
 ---
 
-## 🧪 Step 6: Run Data Tests
+## 🧪 Step 6: Run Tests
 
 ```bash
 dbt test
 ```
 
-This validates:
-
-* Data integrity
-* Relationships
-* Business rules
-
 ---
 
-## 📚 Step 7: View Documentation (Optional)
+## 📚 Optional: View Docs
 
 ```bash
 dbt docs generate
@@ -192,72 +76,24 @@ dbt docs serve
 
 ---
 
-## 📈 Expected Output
+## 🎯 Outcome
 
-After successful run, you will have:
-
-### Intermediate Models
-
-* Enriched datasets for orders, shipments, and returns
-
-### Fact Tables
-
-* Move orders, shipments, returns (line-level grain)
-
-### Dimension Tables
-
-* Items, sites, warehouses
-
-### KPI Models
-
-* Fulfillment rate
-* Shipment performance
-* Return analysis
-* Stock utilization
+* Intermediate models (business logic)
+* Fact & dimension tables
+* KPI models
 
 ---
 
 ## ⚠️ Troubleshooting
 
-### Issue: Connection Error
-
-* Verify Databricks host and token
-* Check SQL warehouse is running
-
-### Issue: Models not building
-
-* Run:
-
 ```bash
 dbt debug
 ```
 
-### Issue: Missing tables
-
-* Ensure seeds are loaded
-* Verify schema permissions
-
 ---
 
-## 💡 Tips
+## 🔥 Note
 
-* Use `dbt run --select <model_name>` to run specific models
-* Use `dbt test --select <model_name>` for targeted validation
-* Explore lineage using dbt docs
+This repository focuses on **data modeling and dbt structure**.
 
----
-
-## 🎯 Outcome
-
-After setup, you will have a **production-style analytics system** capable of:
-
-* Tracking inventory movement
-* Monitoring shipment performance
-* Analyzing return behavior
-* Generating business KPIs
-
----
-
-## 🔥 You're Ready!
-
-You now have a working **end-to-end dbt project on Databricks** 🚀
+For a complete plug-and-play setup (data + detailed guide), refer to the full version.
