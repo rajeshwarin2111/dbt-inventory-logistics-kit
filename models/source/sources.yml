@@ -1,0 +1,297 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Raw inventory and logistics data for warehouse-to-site asset movement tracking"
+    database: telecom_source
+    schema: raw
+
+    tables:
+
+      - name: items
+        description: "Master list of all trackable items/assets"
+        identifier: items
+        columns:
+          - name: item_id
+            data_tests:
+              - unique
+              - not_null
+          - name: item_code
+            data_tests: 
+              - unique
+              - not_null
+        
+      - name: warehouses
+        description: "Master list of warehouses"
+        identifier: warehouse
+        columns:
+          - name: warehouse_id
+            data_tests:
+              - unique
+              - not_null
+          - name: warehouse_code
+            data_tests: 
+              - unique
+              - not_null
+        
+      - name: sites
+        description: "Master list of installation sites"
+        identifier: site
+        columns:
+          - name: site_id
+            data_tests:
+              - unique
+              - not_null
+          - name: site_code
+            data_tests: 
+              - unique
+              - not_null
+        
+      - name: engineers
+        description: "Internal team engineers"
+        identifier: engineer
+        columns:
+          - name: engineer_id
+            data_tests:
+              - unique
+              - not_null
+          - name: engineer_code
+            data_tests: 
+              - unique
+              - not_null
+        
+      - name: shipment_companies
+        description: "Approved third-party shipment companies"
+        identifier: shipment_company
+        columns:
+          - name: company_id
+            data_tests:
+              - unique
+              - not_null
+          - name: company_code
+            data_tests: 
+              - unique
+              - not_null  
+
+      - name: requests
+        description: "Customer installation requests — entry point of all flows"
+        identifier: request
+        columns:
+          - name: request_id
+            data_tests:
+              - unique
+              - not_null
+          - name: request_number
+            data_tests: 
+              - unique
+              - not_null
+          - name: site_id
+            data_tests:
+              - relationships:
+                  arguments:
+                    to: source('raw', 'sites')
+                    field: site_id
+          - name: status
+            data_tests:
+              - accepted_values:
+                  arguments:
+                    values: ['Completed','In Progress','Pending']
+        
+      - name: move_orders
+        description: "Orders to dispatch items from warehouse to site"
+        identifier: move_orders
+        columns:
+          - name: move_order_id
+            data_tests:
+             - unique
+             - not_null
+          - name: site_id
+            data_tests:
+              - relationships:
+                  arguments:
+                    to: source('raw', 'sites')
+                    field: site_id
+          - name: request_id
+            data_tests:
+              - relationships:
+                  arguments:
+                    to: source('raw', 'requests')
+                    field: request_id
+          - name: warehouse_id
+            data_tests:
+              - relationships:
+                  arguments:
+                    to: source('raw', 'warehouses')
+                    field: warehouse_id
+
+      - name: move_order_lines
+        description: "Individual line items per move order"
+        identifier: move_order_lines
+        columns:
+          - name: line_id
+            data_tests:
+             - unique
+             - not_null
+          - name: move_order_id
+            data_tests:
+              - relationships:
+                  arguments:
+                    to: source('raw', 'move_orders')
+                    field: move_order_id
+        
+      - name: shipments
+        description: "Physical shipments — covers both forward and reverse"
+        identifier: shipments
+        columns:
+          - name: shipment_id
+            data_tests:
+              - unique
+              - not_null
+          - name: shipment_number
+            data_tests:
+              - unique
+              - not_null
+          - name: shipment_type
+            data_tests:
+              - not_null
+              - accepted_values:
+                  arguments:
+                      values: ['FORWARD', 'REVERSE']
+          - name: status
+            data_tests:
+              - accepted_values:
+                  arguments:
+                      values: ['In Transit', 'Delivered', 'Failed']
+        
+      - name: shipment_lines
+        description: "Individual items per shipment for receipt validation"
+        identifier: shipment_lines
+        columns:
+          - name: shipment_line_id
+            data_tests:
+              - unique
+              - not_null
+          - name: shipment_id
+            data_tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('raw', 'shipments')
+                    field: shipment_id
+          - name: item_id
+            data_tests:
+                - not_null
+                - relationships:
+                    arguments:
+                      to: source('raw', 'items')
+                      field: item_id
+          - name: status
+            data_tests:
+              - accepted_values:
+                  arguments:
+                    values: ['Pending', 'Partially Received', 'Received', 'Damaged']
+
+
+      - name: return_orders
+        description: "Return requests for excess, faulty, or uninstalled items"
+        identifier: return_orders
+        columns:
+          - name: return_order_id
+            data_tests:
+              - unique
+              - not_null
+          - name: return_order_number
+            data_tests:
+              - unique
+              - not_null
+          - name: request_id
+            data_tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('raw', 'requests')
+                    field: request_id
+          - name: site_id
+            data_tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('raw', 'sites')
+                    field: site_id
+          - name: warehouse_id
+            data_tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('raw', 'warehouses')
+                    field: warehouse_id
+          - name: return_reason
+            data_tests:
+              - not_null
+              - accepted_values:
+                  arguments:
+                      values: ['Excess', 'Faulty', 'Uninstallation']
+          - name: status
+            data_tests:
+              - accepted_values:
+                  arguments:
+                      values: ['Pending', 'Dispatched', 'Received', 'Cancelled', 'In Transit']
+        
+      - name: return_order_lines
+        description: "Individual items per return order"
+        identifier: return_order_lines
+        columns:
+          - name: return_line_id
+            data_tests:
+                - unique
+                - not_null
+          - name: return_order_id
+            data_tests:
+                - not_null
+                - relationships:
+                    arguments:
+                      to: source('raw', 'return_orders')
+                      field: return_order_id
+          - name: item_id
+            data_tests:
+                - not_null
+                - relationships:
+                    arguments:
+                      to: source('raw', 'items')
+                      field: item_id
+          - name: condition
+            data_tests:
+              - accepted_values:
+                  arguments:
+                      values: ['Good', 'Faulty', 'Damaged']
+          - name: status
+            data_tests:
+              - accepted_values:
+                  arguments:
+                      values: ['Pending', 'Dispatched', 'Received', 'Cancelled', 'In Transit']
+
+        
+      - name: stock
+        description: "Current inventory levels per item per warehouse"
+        identifier: stock
+        columns:
+        - name: stock_id
+          data_tests:
+            - unique
+            - not_null
+        - name: warehouse_id
+          data_tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: source('raw', 'warehouses')
+                  field: warehouse_id
+        - name: item_id
+          data_tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: source('raw', 'items')
+                  field: item_id
+        
+      
