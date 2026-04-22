@@ -190,9 +190,6 @@ dbt docs generate
 dbt docs serve
 ```
 
-Open in browser:
-👉 http://localhost:8080
-
 ---
 
 ## 📈 Expected Output
