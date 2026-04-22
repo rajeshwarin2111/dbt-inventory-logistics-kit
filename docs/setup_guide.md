@@ -8,7 +8,7 @@ This guide will help you run the project end-to-end using **dbt + Databricks**.
 
 Make sure you have:
 
-* Python (>= 3.8)
+* Python (<= 3.11)
 * dbt installed
 * Access to Databricks workspace
 * Databricks SQL Warehouse / Cluster
@@ -60,7 +60,7 @@ inventory_project:
 ## 📂 Step 3: Clone the Repository
 
 ```bash
-git clone <your-repo-url>
+git clone <dbt-inventory-logistic-kit-repo-url>
 cd dbt-inventory-logistics-kit
 ```
 
