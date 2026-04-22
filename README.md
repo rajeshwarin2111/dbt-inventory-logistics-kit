@@ -93,12 +93,12 @@ models/
 
 - dbt Core `>= 1.5` or dbt Cloud
 - Databricks workspace with cluster or SQL warehouse
-- Python `>= 3.8`
+- Python `<= 3.8`
 
 ### 1. Clone the project
 
 ```bash
-git clone https://github.com/yourhandle/dbt-inventory-logistics-kit.git
+git clone https://github.com/rajeshwarin2111/dbt-inventory-logistics-kit.git
 cd dbt-inventory-logistics-kit
 ```
 
@@ -122,7 +122,7 @@ inventory_logistics:
       http_path: /sql/1.0/warehouses/your-warehouse-id
       token: your-personal-access-token
       catalog: hive_metastore         # or your Unity Catalog name
-      schema: inventory_dev
+      schema: raw
 ```
 
 ### 4. Set environment variables
