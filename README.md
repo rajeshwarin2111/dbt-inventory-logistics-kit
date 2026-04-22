@@ -22,7 +22,7 @@ It enables:
 ## 🏗️ Architecture
 
 <p align="center">
-  <img src="./architecture_diagram.png" width="900"/>
+  <img src="./assets/architecture.png" width="900"/>
   <br>
   <em>End-to-End dbt Architecture for Inventory & Logistics Analytics</em>
 </p>
