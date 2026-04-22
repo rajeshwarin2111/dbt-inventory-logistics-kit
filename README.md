@@ -2,32 +2,36 @@
 
 ### End-to-End Supply Chain Data Modeling Project
 
-Design and implementation of a **production-style analytics pipeline** using dbt to model inventory movement, shipments, returns, and full asset lifecycle.
+A production-style dbt project that models **inventory movement, shipments, returns, and asset lifecycle** into analytics-ready datasets.
 
 ---
 
 ## 🔥 Project Overview
 
-This project simulates a **real-world supply chain system** where data flows from operational tables into analytics-ready models.
+This project simulates a **real-world supply chain system**, transforming raw operational data into structured analytics models.
 
-It focuses on:
+It enables:
 
-* Inventory movement tracking
-* Shipment and delivery analysis
-* Return order insights
-* End-to-end asset lifecycle visibility
+* 📦 Inventory tracking across warehouses
+* 🚚 Shipment and delivery analysis
+* 🔁 Return order insights
+* 🔍 End-to-end asset lifecycle visibility
 
 ---
 
 ## 🏗️ Architecture
 
-![Project Architecture](./architecture_diagram.png)
+<p align="center">
+  <img src="./architecture_diagram.png" width="900"/>
+  <br>
+  <em>End-to-End dbt Architecture for Inventory & Logistics Analytics</em>
+</p>
 
-The project follows a **layered dbt modeling approach**:
+### 📌 Flow
 
 * **Source Layer** → Raw operational tables
-* **Intermediate Layer** → Cleaned, joined, enriched business logic
-* **Marts Layer** → Fact, dimension, and KPI models
+* **Intermediate Layer** → Business logic & enrichment
+* **Marts Layer** → Fact, dimension & KPI models
 * **Consumption Layer** → Reporting & analytics
 
 ---
@@ -37,7 +41,7 @@ The project follows a **layered dbt modeling approach**:
 * dbt (data build tool)
 * SQL
 * Databricks (Delta Lake)
-* Modern data modeling (ELT approach)
+* ELT data modeling approach
 
 ---
 
@@ -75,10 +79,17 @@ models/
 
 ### 🔹 Intermediate Layer (Business Logic)
 
-* `int_move_orders_enriched` → Combines move orders, lines, sites, warehouses, and items
-* `int_shipments_enriched` → Enriches shipment data with company, engineer, and location
-* `int_rev_orders_enriched` → Return orders with warehouse & item context
-* `int_asset_lifecycle` → Full lifecycle tracking from order → shipment → return
+* `int_move_orders_enriched`
+  → Combines move orders, lines, sites, warehouses, and items
+
+* `int_shipments_enriched`
+  → Enriches shipments with company, engineer, and location
+
+* `int_rev_orders_enriched`
+  → Return orders enriched with warehouse and item details
+
+* `int_asset_lifecycle`
+  → Tracks complete item journey (order → shipment → return)
 
 ---
 
@@ -87,10 +98,10 @@ models/
 #### 📊 Dimension Models
 
 * `dim_items` → Product attributes
-* `dim_sites` → Business/site hierarchy
+* `dim_sites` → Site hierarchy
 * `dim_warehouses` → Warehouse metadata
 
-#### 📦 Fact Models (Grain defined)
+#### 📦 Fact Models (Grain Defined)
 
 * `fct_move_order_lines` → One row per move order line
 * `fct_shipment_lines` → One row per shipment line
@@ -105,26 +116,77 @@ models/
 
 ---
 
-## 📊 Key Business Insights Enabled
+## 🧪 Data Quality & Testing
 
-* 📦 Inventory movement tracking across warehouses
-* 🚚 Shipment performance and delivery efficiency
-* 🔁 Return pattern analysis
-* 🔍 End-to-end asset lifecycle visibility
-* 📈 KPI-driven supply chain performance monitoring
+Implemented **dbt tests across source and model layers** to ensure data reliability.
+
+### 🔹 Test Types
+
+* `not_null` → Mandatory field validation
+* `unique` → Primary key enforcement
+* `relationships` → Referential integrity
+* `accepted_values` → Business rule validation
+
+---
+
+### 🔹 Example
+
+```yaml
+- name: shipments
+  columns:
+    - name: shipment_id
+      tests:
+        - unique
+        - not_null
+
+    - name: shipment_type
+      tests:
+        - accepted_values:
+            values: ['FORWARD', 'REVERSE']
+```
+
+---
+
+### 🔹 Coverage
+
+* Source tables validated for **data integrity**
+* Fact tables validated for **correct grain**
+* Relationships enforced across:
+
+  * Orders ↔ Requests
+  * Shipments ↔ Shipment Lines
+  * Items ↔ Inventory
+
+---
+
+### 🔹 Run Tests
+
+```
+dbt test
+```
+
+---
+
+## 📊 Business Insights Enabled
+
+* Inventory movement across warehouses
+* Shipment performance & delivery efficiency
+* Return pattern analysis
+* Asset lifecycle tracking
+* KPI-driven supply chain monitoring
 
 ---
 
 ## ⚡ How to Run
 
-```bash
+```
 dbt run
 dbt test
 ```
 
 (Optional)
 
-```bash
+```
 dbt docs generate
 dbt docs serve
 ```
@@ -136,24 +198,24 @@ dbt docs serve
 * Built an **end-to-end supply chain analytics system using dbt**
 * Designed **modular intermediate models for business logic abstraction**
 * Implemented **fact & dimension modeling with defined grain**
-* Created **KPI layer for business reporting and decision-making**
-* Applied **real-world data engineering and analytics engineering practices**
+* Applied **data quality testing using dbt (schema + business rules)**
+* Developed **KPI layer for analytics and reporting**
 
 ---
 
 ## 🧠 Key Learnings
 
-* Data modeling for logistics and inventory systems
-* Designing scalable dbt project structures
-* Building reusable and maintainable SQL transformations
-* Translating business requirements into data models
+* Data modeling for inventory & logistics systems
+* Designing scalable dbt architectures
+* Implementing data quality validation
+* Translating business requirements into analytics models
 
 ---
 
 ## 🚀 Future Enhancements
 
 * Add incremental models
-* Implement dbt tests (schema & data quality)
+* Expand test coverage for marts
 * Build dashboards (Power BI / Tableau)
 * Add orchestration (Airflow / Databricks Jobs)
 
@@ -171,4 +233,4 @@ If you found this useful:
 
 ## 🔥 Final Note
 
-This project demonstrates how **modern data teams design analytics layers using dbt** to convert raw operational data into actionable insights.
+This project demonstrates how **modern data teams design scalable analytics systems using dbt** to transform raw operational data into actionable insights.
