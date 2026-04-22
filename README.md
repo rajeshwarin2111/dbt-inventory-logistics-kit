@@ -21,7 +21,7 @@ It focuses on:
 
 ## 🏗️ Architecture
 
-![Project Architecture](./assets/architecture.png)
+![Project Architecture](./architecture_diagram.png)
 
 The project follows a **layered dbt modeling approach**:
 
