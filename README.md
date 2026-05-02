@@ -191,15 +191,6 @@ dbt docs generate
 dbt docs serve
 ```
 
----
-
-## 💼 Resume Highlights
-
-* Built an **end-to-end supply chain analytics system using dbt**
-* Designed **modular intermediate models for business logic abstraction**
-* Implemented **fact & dimension modeling with defined grain**
-* Applied **data quality testing using dbt (schema + business rules)**
-* Developed **KPI layer for analytics and reporting**
 
 ---
 
@@ -210,14 +201,6 @@ dbt docs serve
 * Implementing data quality validation
 * Translating business requirements into analytics models
 
----
-
-## 🚀 Future Enhancements
-
-* Add incremental models
-* Expand test coverage for marts
-* Build dashboards (Power BI / Tableau)
-* Add orchestration (Airflow / Databricks Jobs)
 
 ---
 
